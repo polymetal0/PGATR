@@ -37,15 +37,14 @@ Shader "PGATR/DisplacementMap"
             {
                  vertexOutput o;
 
-                 float4 dispTexColor = tex2Dlod(_DisplacementTex, float4(i.texcoord.xy, 0.0, 0.0));
-                 float displacement = dot(float3(0.21, 0.72, 0.07), dispTexColor.rgb) * _MaxDisplacement;
+                 float4 dispTex = tex2Dlod(_DisplacementTex, float4(i.texcoord.xy, 0.0, 0.0));
+                 float disp = dispTex.rgb * _MaxDisplacement;
+                 float4 newPos = i.vertex + float4(i.normal * disp, 0.0);
 
-                 float4 newVertexPos = i.vertex + float4(i.normal * displacement, 0.0);
-
-                 o.position = UnityObjectToClipPos(newVertexPos);
+                 o.position = UnityObjectToClipPos(newPos);
                  o.texcoord = i.texcoord;
-                 return o;
 
+                 return o;
             }
 
             float4 frag(vertexOutput i) : COLOR
